@@ -1,0 +1,94 @@
+#!/bin/bash
+# Deep Research CLI - Unix
+# Only forwards arguments to run_deep_research.py
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLAWD_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Default values
+TOPIC=""
+RUN_ID=""
+DEPTH="medium"
+BUDGET=10
+LANG="en"
+WORKERS=5
+RUNS_DIR="./runs"
+NON_INTERACTIVE=false
+
+usage() {
+    echo "Usage: dr [topic] [options]"
+    echo ""
+    echo "Options:"
+    echo "  --run-id ID           Run ID for resume"
+    echo "  --depth DEPTH         brief|medium|deep (default: medium)"
+    echo "  --budget N            Budget for sources (default: 10)"
+    echo "  --lang LANG           Language (default: en)"
+    echo "  --workers N           Number of workers (default: 5)"
+    echo "  --runs-dir DIR        Runs directory (default: ./runs)"
+    echo "  --non-interactive    Exit with code 2 if clarification needed"
+    echo ""
+    echo "Examples:"
+    echo "  dr 'artificial intelligence trends 2024'"
+    echo "  dr --depth deep --workers 10 'quantum computing'"
+    exit 1
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --run-id)
+            RUN_ID="$2"
+            shift 2
+            ;;
+        --depth)
+            DEPTH="$2"
+            shift 2
+            ;;
+        --budget)
+            BUDGET="$2"
+            shift 2
+            ;;
+        --lang)
+            LANG="$2"
+            shift 2
+            ;;
+        --workers)
+            WORKERS="$2"
+            shift 2
+            ;;
+        --runs-dir)
+            RUNS_DIR="$2"
+            shift 2
+            ;;
+        --non-interactive)
+            NON_INTERACTIVE=true
+            shift
+            ;;
+        --help|-h)
+            usage
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            usage
+            ;;
+        *)
+            TOPIC="$1"
+            shift
+            ;;
+    esac
+done
+
+# Run Python script (all logic handled there)
+PYTHON_ARGS=()
+if [ -n "$TOPIC" ]; then
+    PYTHON_ARGS+=("$TOPIC")
+fi
+[ -n "$RUN_ID" ] && PYTHON_ARGS+=("--run-id" "$RUN_ID")
+[ -n "$DEPTH" ] && PYTHON_ARGS+=("--depth" "$DEPTH")
+[ -n "$BUDGET" ] && PYTHON_ARGS+=("--budget" "$BUDGET")
+[ -n "$LANG" ] && PYTHON_ARGS+=("--lang" "$LANG")
+[ -n "$WORKERS" ] && PYTHON_ARGS+=("--workers" "$WORKERS")
+[ -n "$RUNS_DIR" ] && PYTHON_ARGS+=("--runs-dir" "$RUNS_DIR")
+[ "$NON_INTERACTIVE" = "true" ] && PYTHON_ARGS+=("--non-interactive")
+
+PYTHONPATH="$CLAWD_DIR" python3 "$SCRIPT_DIR/run_deep_research.py" "${PYTHON_ARGS[@]}"

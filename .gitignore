@@ -1,0 +1,33 @@
+# Deep Research project
+
+# outputs / large data
+**/reports/
+**/runs/
+**/data/
+**/memory/
+**/sandbox/
+**/__pycache__/
+**/*.pyc
+
+# Python virtual environments
+**/venv/
+**/.venv/
+
+# Node modules
+**/node_modules/
+
+# OS noise
+.DS_Store
+
+# Logs
+*.log
+
+# validator / gate artifacts
+**/validate_report.txt
+**/run.log
+**/codex_review.json
+**/.fail_count.txt
+
+# OpenClaw runtime
+.omc/
+.openclaw/
