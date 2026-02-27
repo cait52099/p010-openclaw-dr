@@ -1,3 +1,24 @@
+## Install (local)
+
+```bash
+./install.sh --local --prefix "$HOME/.local/bin"
+```
+
+## Run
+
+```bash
+dr "your topic"
+```
+
+## Optional: /dr shortcut (zsh)
+
+```bash
+bash scripts/enable_dr_slash.sh --shell zsh
+source ~/.zshrc
+/dr "your topic"
+```
+
+> bash does not support `/dr` alias. Use `drs "your topic"` after enabling bash shortcut.
 # Deep Research (深度研究)
 
 > 自主研究 pipeline，内置验证和缓存机制
