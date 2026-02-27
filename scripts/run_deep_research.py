@@ -4,6 +4,7 @@
 import argparse
 import json
 import sys
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -119,6 +120,22 @@ def handle_no_topic(args) -> None:
 
 def main():
     args = parse_args()
+    if getattr(args, 'runs_dir', None):
+        args.runs_dir = str(args.runs_dir).strip("\"'")
+    runs_root = getattr(args, 'runs_dir', None) or os.environ.get('DR_RUNS_DIR') or 'runs'
+    runs_root = str(runs_root)
+    # Default runs_dir from env if not explicitly provided
+    try:
+        _runs_val = getattr(args, 'runs_dir', None)
+    except Exception:
+        _runs_val = None
+    if _runs_val in (None, ''):
+        _env_runs = os.environ.get('DR_RUNS_DIR')
+        if _env_runs:
+            try:
+                setattr(args, 'runs_dir', _env_runs)
+            except Exception:
+                pass
 
     # Handle --verify-only mode FIRST (before any topic or clarification handling)
     if hasattr(args, 'verify_only') and args.verify_only:

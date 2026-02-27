@@ -1,5 +1,17 @@
 #!/bin/bash
+DR_RUNS_DIR=${DR_RUNS_DIR:-}
+DR_RUNS_DIR="${DR_RUNS_DIR%\"}"
+DR_RUNS_DIR="${DR_RUNS_DIR#\"}"
+DR_RUNS_DIR="${DR_RUNS_DIR%\'}"
+DR_RUNS_DIR="${DR_RUNS_DIR#\'}"
 # Deep Research CLI - Unix
+
+# --- DR_RUNS_DIR support (smoke/isolated runs) ---
+RUNS_DIR_ARG=()
+if [ -n "${DR_RUNS_DIR:-}" ]; then
+  RUNS_DIR_ARG=(--runs-dir "$DR_RUNS_DIR")
+fi
+# -----------------------------------------------
 # Only forwards arguments to run_deep_research.py
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -90,5 +102,8 @@ fi
 [ -n "$WORKERS" ] && PYTHON_ARGS+=("--workers" "$WORKERS")
 [ -n "$RUNS_DIR" ] && PYTHON_ARGS+=("--runs-dir" "$RUNS_DIR")
 [ "$NON_INTERACTIVE" = "true" ] && PYTHON_ARGS+=("--non-interactive")
+
+# Append DR_RUNS_DIR env override if set (takes precedence)
+PYTHON_ARGS+=("${RUNS_DIR_ARG[@]}")
 
 PYTHONPATH="$CLAWD_DIR" python3 "$SCRIPT_DIR/run_deep_research.py" "${PYTHON_ARGS[@]}"
