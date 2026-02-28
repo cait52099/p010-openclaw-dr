@@ -14,7 +14,7 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 # Default values
 MODE="local"
 FULL_OUTPUT="yes"
-PREFIX="$HOME/bin"
+PREFIX="${HOME}/.local/bin"
 INSTALL_DIR="$HOME/.local/share/openclaw-dr"
 
 usage() {
@@ -117,7 +117,7 @@ if [ "$FULL_OUTPUT" = "yes" ] && [ $RC -eq 0 ]; then
     fi
 
     # Find latest report by mtime (not relying on run_* prefix)
-    LATEST_REPORT=$(ls -1t "$RUNS_DIR"/*/final/report.md 2>/dev/null | head -n 1)
+    LATEST_REPORT=$(ls -1t "$RUNS_DIR"/*/final/report.md 2>/dev/null | head -n 1 || true)
     if [ -n "$LATEST_REPORT" ] && [ -f "$LATEST_REPORT" ]; then
         echo ""
         echo "=== Full Report ==="
@@ -135,7 +135,7 @@ if [ $RC -eq 3 ]; then
     fi
 
     # Find latest verification by mtime
-    LATEST_VERIFY=$(ls -1t "$RUNS_DIR"/*/final/verification.md 2>/dev/null | head -n 1)
+    LATEST_VERIFY=$(ls -1t "$RUNS_DIR"/*/final/verification.md 2>/dev/null | head -n 1 || true)
     if [ -n "$LATEST_VERIFY" ] && [ -f "$LATEST_VERIFY" ]; then
         echo ""
         echo "=== Verification Details ==="
